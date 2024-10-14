@@ -13,10 +13,7 @@ namespace Mifinanazas.God.Applicattion.Interfaces.Repositories
     {
         public Task<int> Save(GameDto req);
         public Task<int> SaveTotal(TotalDto total);
-        public Task<List<ScoreResDto>> GetScore(ScoreReqDto req);
-        public Task<int> Move(MoveReqDto req);
-        public Task<List<MoveOptionsResDto>> MoveOptions(MoveOptionsReqDto req);
-        public Task<List<MovementDto>> GetMoveByRound(int gameId, int roundId);
+        public Task<List<ScoreResDto>> GetScore(ScoreReqDto req);        
         public Task<GameDto> Get(int gameId);
     }
 }

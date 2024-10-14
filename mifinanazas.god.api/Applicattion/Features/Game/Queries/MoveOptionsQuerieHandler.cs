@@ -13,16 +13,16 @@ namespace Mifinanazas.God.Applicattion.Features.Game.Queries
 {
     public class MoveOptionsQuerieHandler : IRequestHandler<MoveOptionsQuerie, ResultObject<List<MoveOptionsResDto>>>
     {        
-        private readonly IGameRepository _gameRepository;
+        private readonly IMovementsRepository _movementsRepository;
              
-        public MoveOptionsQuerieHandler(IGameRepository gameRepository)
+        public MoveOptionsQuerieHandler(IMovementsRepository movementsRepository)
         {
-            _gameRepository = gameRepository;
+            _movementsRepository = movementsRepository;
         }       
         public async Task<ResultObject<List<MoveOptionsResDto>>> Handle(MoveOptionsQuerie request, CancellationToken cancellationToken)
         {
             MoveOptionsReqDto req = request.Adapt<MoveOptionsReqDto>();
-            var result = await _gameRepository.MoveOptions(req);
+            var result = await _movementsRepository.MoveOptions(req);
 
             return new ResultObject<List<MoveOptionsResDto>> { success = true, error = "", data = result };
         }

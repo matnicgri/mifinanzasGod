@@ -11,7 +11,7 @@ import { Movement } from '../models/movement-model';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root' // Esto hace que el servicio sea singleton en toda la aplicación
+  providedIn: 'root'
 })
 export class GameService {  
   private apiUrl = environment.apiUrl;
@@ -25,7 +25,7 @@ export class GameService {
   }
 
   Move(moveData:MoveIn): Observable<ApiResponse<Status>> {
-    return this.http.post<any>(`${this.apiUrl}/game/move`, moveData);    
+    return this.http.post<any>(`${this.apiUrl}/movements`, moveData);    
   }
 
   GetScores(gameId: number): Observable<ApiResponse<Score[]>> {
@@ -38,6 +38,10 @@ export class GameService {
 
   GetMovementOptions(): Observable<ApiResponse<Movement[]>> {
     let id=-1;
-    return this.http.get<any>(`${this.apiUrl}/game/move/options?id=${id}`);    
+    return this.http.get<any>(`${this.apiUrl}/movements/options?id=${id}`);    
+  }
+
+  UpdateMovementOptions(mov:any): Observable<ApiResponse<boolean>> {
+    return this.http.post<any>(`${this.apiUrl}/movements/options`, mov);    
   }
 }

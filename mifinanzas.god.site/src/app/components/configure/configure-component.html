@@ -1,0 +1,46 @@
+<div class="form-container">
+  <h2>{{ title }}</h2>
+  <div *ngIf="moveOptions.length === 0">No movements available.</div>
+
+  <form (ngSubmit)="onSubmit()" #movementForm="ngForm">
+    <table *ngIf="moveOptions.length > 0" class="tableMoveOptions">
+      <tr *ngFor="let move of moveOptions">
+        <td style="padding: 10px;">
+          {{ move.description }}
+        </td>
+        <td style="padding: 10px;">
+          <label for="killIdSelect-{{ move.id }}" style="margin-right: 10px;">kills:</label>
+          <select id="killIdSelect-{{ move.id }}" 
+                  [(ngModel)]="selectedKillIds[move.id]" 
+                  name="selectedKillId-{{ move.id }}" required
+                  style="width: 100%;">
+            <option value="" disabled>Select Kill ID</option>
+            <option *ngFor="let option of moveOptions" 
+            [value]="option.id"
+            [selected]="move.killId === option.id">            
+              {{option.description}}
+            </option>
+          </select>
+        </td>
+      </tr>
+    </table>    
+    <div class="divAddMov">
+      <input type="text" 
+              name="newMovementDescription" 
+              [(ngModel)]="newMovementDescription" 
+              placeholder="Enter new movement description"               
+              class="txtAddMove" 
+              required>
+      
+      <button type="button" (click)="addMovement()">Agregar Movimiento</button>
+    </div>
+    <br/>
+    <button type="submit">Guardar</button>
+  </form>
+</div>
+
+
+
+
+
+

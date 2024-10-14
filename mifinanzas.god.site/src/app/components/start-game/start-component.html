@@ -1,18 +1,26 @@
 <div class="form-container">
-    <h1>{{ title }}</h1>
-    
-    <form (ngSubmit)="onSubmit()">
+    <h2>{{ title }}</h2>    
+    <form #gameForm="ngForm" (ngSubmit)="onSubmit()">
       <div>
-        <label for="input1">Player 1:</label>
-        <input type="text" id="txtPlayer1" [(ngModel)]="txtPlayer1" name="txtPlayer1" required />
+        <label for="txtPlayer1">Player 1:</label>        
+        <input type="text" id="txtPlayer1" [(ngModel)]="txtPlayer1" name="txtPlayer1" required minlength="3" #player1="ngModel" />
+        <div *ngIf="player1.invalid && (player1.dirty || player1.touched)">
+          <small *ngIf="player1.errors?.['required']">Player 1 name is required.</small>
+          <small *ngIf="player1.errors?.['minlength']">Player 1 name must be at least 3 characters long.</small>
+        </div>
       </div>
       
       <div>
-        <label for="input2">Player 2:</label>
-        <input type="text" id="txtPlayer2" [(ngModel)]="txtPlayer2" name="txtPlayer2" required />
+        <label for="txtPlayer2">Player 2:</label>
+        <input type="text" id="txtPlayer2" [(ngModel)]="txtPlayer2" name="txtPlayer2" required minlength="3" #player2="ngModel" />
+        <div *ngIf="player2.invalid && (player2.dirty || player2.touched)">
+          <small *ngIf="player2.errors?.['required']">Player 2 name is required.</small>
+          <small *ngIf="player2.errors?.['minlength']">Player 2 name must be at least 3 characters long.</small>
+        </div>
       </div>
   
-      <button type="submit">Start</button>
-    </form>
-  </div>
-  
+      <button type="submit" [disabled]="gameForm.invalid">Start</button>
+    </form>  
+</div>
+<br/>
+<configure-component></configure-component>

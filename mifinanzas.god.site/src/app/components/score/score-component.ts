@@ -13,6 +13,7 @@ import { GameService } from '../../services/game-service';
 })
 export class ScoreComponent {
   @Input() gameId: number | null = null; 
+  @Input() roundId: number | null = null; 
   title = 'Score';  
   scores: Score[] = []; 
 
@@ -33,11 +34,11 @@ export class ScoreComponent {
         {
           next: response => {
             if (response.success) {
-              this.scores = response.data; // Asignar los puntajes a la variable
+              this.scores = response.data; 
               console.log('Scores retrieved successfully:', this.scores);        
             } else {
               console.error('Error retrieving scores:', response.error);
-              alert("Error retrieving scores: " + response.error);
+              alert("Error retrieving scores." );
             }
           },
           error: error => {
@@ -47,7 +48,7 @@ export class ScoreComponent {
         }
       );
     }else{
-      alert("No se cargò un id de partida.");
+      alert("No se cargó un id de partida.");
     }
   }  
 

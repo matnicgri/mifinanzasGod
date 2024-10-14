@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using FluentValidation;
+using Mapster;
 using MediatR;
 using Mifinanazas.God.Applicattion.Dtos.Domain;
 using Mifinanazas.God.Applicattion.Dtos.Req;
@@ -14,11 +15,16 @@ namespace Mifinanazas.God.Applicattion.Features.Game.Commands
 {
     public class MoveCommandHandler : IRequestHandler<MoveCommand, ResultObject<MoveResDto>>
     {        
+        private readonly IMovementsRepository _movementsRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IPlayerRepository _playerRepository;
 
-        public MoveCommandHandler(IGameRepository gameRepository, IPlayerRepository playerRepository)
+        public MoveCommandHandler(IMovementsRepository movementsRepository, 
+                                  IGameRepository gameRepository, 
+                                  IPlayerRepository playerRepository
+                                  )
         {
+            _movementsRepository = movementsRepository;
             _gameRepository = gameRepository;
             _playerRepository = playerRepository;
         }
@@ -28,6 +34,7 @@ namespace Mifinanazas.God.Applicattion.Features.Game.Commands
             int id = 0;
             int killIdActual = 0;
             int killIdPrev = 0;
+            bool roundFinished = false;
             bool gameFinished = false;
             string playerWinner = "";
             int nextRoundId = request.roundId;
@@ -58,10 +65,9 @@ namespace Mifinanazas.God.Applicattion.Features.Game.Commands
             //verifcar inicio de juego
             if (!(req.roundId == 1 && req.playerId == -1 && req.moveOptionId == -1))
             {
-
-                moveOptions = await _gameRepository.MoveOptions(new MoveOptionsReqDto());
-                id = await _gameRepository.Move(req);
-                lMove = await _gameRepository.GetMoveByRound(req.gameId,req.roundId);
+                moveOptions = await _movementsRepository.MoveOptions(new MoveOptionsReqDto());
+                id = await _movementsRepository.Move(req);
+                lMove = await _movementsRepository.GetMoveByRound(req.gameId,req.roundId);
 
                 foreach (MovementDto move in lMove)
                 {
@@ -75,27 +81,35 @@ namespace Mifinanazas.God.Applicattion.Features.Game.Commands
                         {
                             playersWinMoves.First(x => x.id == move.playerId).totalScore++;
                         }
-
+                       
                         //si el killId del anterior es el del actual mata el actual
                         killIdPrev = moveOptions.First(x => x.id == movePrev.moveOptionId).killId;
                         if (killIdPrev == move.moveOptionId)
                         {
                             playersWinMoves.First(x => x.id == movePrev.playerId).totalScore++;
                         }
+                        
+
+                        //sea cual sea el resultado se avanza de round
+                        roundFinished = true;
+                        nextRoundId++;
                     }
                     i++;
                 }
 
-                playerCalcWinner = playersWinMoves.FirstOrDefault(x => x.totalScore == 1);
-                if (playerCalcWinner != null)
+                if (roundFinished)
                 {
-                    playersWinMoves.First(x => x.id == playerCalcWinner.id).winner = true;
-
-                    //se graban totales delk round                
+                    playerCalcWinner = playersWinMoves.FirstOrDefault(x => x.totalScore == 1);
+                    var twoWinner= playersWinMoves.Count(x => x.totalScore == 1);
+                    if (playerCalcWinner != null && twoWinner==0)
+                    {
+                        playersWinMoves.First(x => x.id == playerCalcWinner.id).winner = true;
+                    }
+                    //se graban totales del round                
                     await _gameRepository.SaveTotal(new TotalDto()
                     {
                         gameId = req.gameId,
-                        roundId = nextRoundId,
+                        roundId = nextRoundId-1,
                         player1Id = playersWinMoves[0].id,
                         player1Name = playersWinMoves[0].name,
                         player1Total = playersWinMoves[0].totalScore,
@@ -103,8 +117,6 @@ namespace Mifinanazas.God.Applicattion.Features.Game.Commands
                         player2Name = playersWinMoves[1].name,
                         player2Total = playersWinMoves[1].totalScore
                     });
-
-                    nextRoundId++;
                 }
 
                 var totalRoundsWinners = await _gameRepository.GetScore(new ScoreReqDto() { gameId = req.gameId });
@@ -120,7 +132,7 @@ namespace Mifinanazas.God.Applicattion.Features.Game.Commands
                 .Where(x => x.totalScore >= 3)
                 .FirstOrDefault();
 
-                if (winner != null && playerCalcWinner != null)
+                if (winner != null && playerCalcWinner != null && winner.id!=-1 && playerCalcWinner.id>0)
                 {
                     gameFinished = true;
                     playerWinner = playersWinMoves.First(x => x.id == winner.id).name;

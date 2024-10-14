@@ -61,62 +61,15 @@ namespace Mifinanazas.God.Persistence.Repositories
                 .Select(y=>new ScoreResDto()
                     {                
                         roundId = y.roundId,
-                        winPlayer = y.totalPlayer1 > y.totalPlayer2 ? y.player1Name:y.player2Name,
-                        winPlayerId = y.totalPlayer1 > y.totalPlayer2 ? y.player1Id : y.player2Id,
+                        winPlayer = ( (y.totalPlayer1 > y.totalPlayer2) ? y.player1Name
+                        : (y.totalPlayer1 < y.totalPlayer2) ? y.player2Name: ""),
+                        winPlayerId = ( (y.totalPlayer1 > y.totalPlayer2) ? y.player1Id
+                        : (y.totalPlayer1 < y.totalPlayer2) ? y.player2Id: -1)
                 }).ToList();
 
             return result;
         }
-
-        public async Task<int> Move(MoveReqDto req)
-        {
-            int actualRound = req.roundId;
-            int nextRound = 0;
-
-            Movements movement = new Movements()
-            {
-                GameId = req.gameId,
-                MoveOptionId = req.moveOptionId,
-                PlayerId = req.playerId,
-                RoundId = req.roundId
-            };
-
-            _context.Movements.Add(movement);
-            _context.SaveChanges();
-
-            return movement.Id;
-        }
-
-        public async Task<List<MovementDto>> GetMoveByRound(int gameId, int roundId)
-        {
-            List<MovementDto> lResMove = new List<MovementDto>();
-
-            lResMove=_context.Movements.
-                        OrderBy(y => y.Id)
-                        .Where(x=> x.RoundId==roundId)
-                        .Where(x => x.GameId == gameId)
-                        .Select(y=>new MovementDto() {
-                                                                        id = y.Id,
-                                                                        gameId = y.GameId,
-                                                                        roundId = y.RoundId,                                                                        
-                                                                        moveOptionId=y.MoveOptionId,    
-                                                                        playerId = y.PlayerId
-                                                                    }).ToList();
-
-            return lResMove;
-        }
-
-        public async Task<List<MoveOptionsResDto>> MoveOptions(MoveOptionsReqDto req)
-        {
-            List<MoveOptionsResDto> res = _context.MoveOptions.Select(x => new MoveOptionsResDto()
-            {
-                id = x.id,
-                description = x.description,
-                killId = x.killId
-            }).ToList();
-            return res;
-        }
-
+               
         public async Task<int> SaveTotal(TotalDto total)
         {
             Totals g = new Totals() { 

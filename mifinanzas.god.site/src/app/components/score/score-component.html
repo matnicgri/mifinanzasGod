@@ -1,4 +1,4 @@
-<div class="form-container"> 
+
   <h2>{{ title }}</h2>
   <div *ngIf="scores && scores.length > 0; else noScores">
     <table class="table">
@@ -20,4 +20,4 @@
   <ng-template #noScores>
     <p>No scores available for this game.</p>
   </ng-template>
-</div>
+

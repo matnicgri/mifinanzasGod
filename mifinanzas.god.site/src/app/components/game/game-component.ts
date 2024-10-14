@@ -18,9 +18,9 @@ import { Router } from '@angular/router';
 })
 export class GameComponent {
   id: number = -1;
-
+  prevRound: number=1;
   currentRound: number=1;
-  title = 'Round 1';
+  title = 'Round ' + this.currentRound;
   txtPlayerName: string = '';
   currentPlayer: Player | undefined;
   moveOptions: Movement[] | null = null;
@@ -56,7 +56,7 @@ export class GameComponent {
             this.moveOptions=response.data;
           } else {            
             console.error('Error retrieving movements options:', response.error);
-            alert("Error retrieving movements options: " + response.error);
+            alert("Error retrieving movements options");
           }
         }
       });
@@ -69,6 +69,7 @@ export class GameComponent {
         next: response => {
           if (response.success) {
             let result=response.data;
+            this.prevRound=this.currentRound;
             this.currentRound = result.nextRoundId;    
             this.gameFinished=result.gameFinished;
             this.gameWinner=result.gamePlayerWinner;  
@@ -82,13 +83,14 @@ export class GameComponent {
             }
 
             const currentPlayerWinner = result.players.find(player => player.winner === true);
-            if (currentPlayerWinner) {
+            if (currentPlayerWinner || (this.prevRound!=this.currentRound)) {
               this.gameService.updateGameStatus(this.id);
             }
 
+            this.updateTitle();
           } else {
             console.error('Error retrieving moves:', response.error);
-            alert("Error retrieving moves: " + response.error);
+            alert("Error retrieving moves");
           }
         },
         error: error => {
@@ -97,6 +99,10 @@ export class GameComponent {
         }
       }
     );
+  }
+
+  updateTitle() {
+    this.title = (this.gameFinished)?'':'Round ' + this.currentRound; // Actualiza el título
   }
 
   onSubmit() {

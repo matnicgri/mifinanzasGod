@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using FluentValidation;
+using Mapster;
 using MediatR;
 using Mifinanazas.God.Applicattion.Dtos.Req;
 using Mifinanazas.God.Applicattion.Dtos.Res;
@@ -15,17 +16,22 @@ namespace Mifinanazas.God.Applicattion.Features.Game.Commands
     {        
         private readonly IGameRepository _gameRepository;
         private readonly IPlayerRepository _playerRepository;
-
-        public GameCommandHandler(IGameRepository gameRepository, IPlayerRepository playerRepository)
+        private readonly IValidator<GameCommand> _validator;
+        public GameCommandHandler(IGameRepository gameRepository, 
+                                  IPlayerRepository playerRepository,
+                                  IValidator<GameCommand> validator)
         {
             _gameRepository = gameRepository;
             _playerRepository = playerRepository;
+            _validator = validator;
         }
         public async Task<ResultObject<int>> Handle(GameCommand request, CancellationToken cancellationToken)
         {
             GameReqDto req = request.Adapt<GameReqDto>();
             int player1Id = 0;
             int player2Id = 0;
+
+            await _validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var player1= await _playerRepository.Get(req.player1Name);
             var player2 = await _playerRepository.Get(req.player2Name);
