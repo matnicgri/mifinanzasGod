@@ -1,0 +1,13 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+/mifinanazas.god.api/.vs
+/mifinanazas.god.api/Api/bin/Debug/net8.0
+/mifinanazas.god.api/Api/obj
+/mifinanazas.god.api/Applicattion/bin/Debug/net8.0
+/mifinanazas.god.api/Applicattion/obj
+/mifinanazas.god.api/Domain/bin/Debug/net8.0
+/mifinanazas.god.api/Domain/obj
+/mifinanazas.god.api/Infraestrcture/Persistence/bin/Debug/net8.0
+/mifinanazas.god.api/Infraestrcture/Persistence/obj

@@ -1,0 +1,23 @@
+<div class="form-container"> 
+  <h2>{{ title }}</h2>
+  <div *ngIf="scores && scores.length > 0; else noScores">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Round</th>
+          <th>Player</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let score of scores">
+          <td>{{ score.roundId }}</td>
+          <td>{{ score.winPlayer }}</td> 
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <ng-template #noScores>
+    <p>No scores available for this game.</p>
+  </ng-template>
+</div>

@@ -1,0 +1,30 @@
+<div class="score-container">
+  <score-component [gameId]="id"></score-component>
+</div>
+
+<div class="form-container">
+  <h2>{{ title }}</h2>
+  <form *ngIf="!gameFinished" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="txtPlayerName">Player Name:</label>    
+      <label for="txtPlayerName">{{txtPlayerName}}</label>          
+    </div>
+    
+    <div>
+      <label for="cmbMove">Select Move:</label>
+      <select id="cmbMove" [(ngModel)]="selectedMove" name="move" required>
+        <option value="" disabled selected>Select Move</option> <!-- Opción por defecto -->
+        <option *ngFor="let move of moveOptions" [value]="move.id">{{ move.description }}</option>
+      </select>
+    </div>
+
+    <button type="submit">Ok</button>
+  </form>
+
+  <div *ngIf="gameFinished">
+    <label>We have a WINNER!! {{ gameWinner }} is the EMPEROR!</label>
+    <button (click)="playAgain()">Play Again</button>
+  </div>
+</div>
+
+
