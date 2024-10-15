@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Game } from '../../models/game-model';
 import {Movement} from '../../models/movement-model'
-import {GameService} from '../../services/game-service'
+import {MovementsService} from '../../services/movements-service'
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -22,14 +22,14 @@ export class ConfigureComponent {
   maxMovements: number = 10;
   newMovementDescription: string = "";
 
-  constructor(private router: Router,private gameService: GameService) {} 
+  constructor(private router: Router,private movementService: MovementsService) {} 
   
   ngOnInit() {   
     this.chargeMoveOptions();    
   }
 
   chargeMoveOptions(){
-    this.gameService.GetMovementOptions().subscribe(
+    this.movementService.GetMovementOptions().subscribe(
       {
         next: response => {
           if (response.success) {
@@ -61,7 +61,7 @@ export class ConfigureComponent {
     });
     
     const moves={moveOptions:selectedMoves};
-    this.gameService.UpdateMovementOptions(moves).subscribe({
+    this.movementService.UpdateMovementOptions(moves).subscribe({
       next: response => {
           if (!response.success) {
               console.error('Error updating movements options:', response.error);

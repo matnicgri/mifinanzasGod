@@ -6,6 +6,7 @@ using Mifinanazas.God.Persistence.Context;
 using Mifinanazas.God.Persistence.Repositories;
 using FluentValidation;
 using Mifinanazas.God.Applicattion.Validators;
+using Mifinanazas.God.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 

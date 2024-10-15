@@ -21,7 +21,7 @@ namespace Mifinanazas.God.Api.Controllers
         public async Task<IActionResult> SaveGame([FromBody] GameCommand command)
         {
             ResultObject<int> result = await _mediator.Send(command);
-
+           
             if (!result.success)
             {
                 return BadRequest(result.error);

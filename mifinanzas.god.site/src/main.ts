@@ -4,12 +4,15 @@ import { AppComponent } from './app/app.component';
 import '@angular/compiler';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import { routes } from './app/app.routes'; // Asegúrate de que la ruta a tus rutas sea correcta
+import { routes } from './app/app.routes'; 
+import { importProvidersFrom, ErrorHandler } from '@angular/core';
+import { GlobalErrorHandler } from '../src/app/global-error-handler'; 
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(),
-    provideRouter(routes), // Agrega esta línea para el enrutador
+    provideRouter(routes), 
+    { provide: ErrorHandler, useClass: GlobalErrorHandler } 
   ],
 })
 .catch((err) => console.error(err));

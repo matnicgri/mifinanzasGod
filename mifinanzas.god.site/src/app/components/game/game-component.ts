@@ -7,6 +7,7 @@ import {MoveIn} from '../../models/move-in-model'
 import {Player} from '../../models/player-model'
 import {Movement} from '../../models/movement-model'
 import {GameService} from '../../services/game-service'
+import {MovementsService} from '../../services/movements-service'
 import { Router } from '@angular/router';
 
 @Component({
@@ -28,9 +29,13 @@ export class GameComponent {
   gameFinished: boolean=false;
   gameWinner: string="";
 
-  constructor(private route: ActivatedRoute, private router: Router, private gameService: GameService) {}
+  constructor(private route: ActivatedRoute, 
+              private router: Router, 
+              private gameService: GameService,
+              private movementsService: MovementsService
+            ) {}
 
-  ngOnInit() {   
+  ngOnInit() {       
     this.route.params.subscribe(params => {
       this.id = params['id']; 
       console.log('Game ID:', this.id); 
@@ -49,7 +54,7 @@ export class GameComponent {
   }
 
   chargeMoveOptions(){
-    this.gameService.GetMovementOptions().subscribe(
+    this.movementsService.GetMovementOptions().subscribe(
       {
         next: response => {
           if (response.success) {
@@ -64,7 +69,7 @@ export class GameComponent {
 
   Move(moveData: MoveIn){
 
-    this.gameService.Move(moveData).subscribe(
+    this.movementsService.Move(moveData).subscribe(
       {
         next: response => {
           if (response.success) {
@@ -102,7 +107,7 @@ export class GameComponent {
   }
 
   updateTitle() {
-    this.title = (this.gameFinished)?'':'Round ' + this.currentRound; // Actualiza el título
+    this.title = (this.gameFinished)?'':'Round ' + this.currentRound;
   }
 
   onSubmit() {

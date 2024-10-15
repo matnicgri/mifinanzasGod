@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { GameService } from '../../services/game-service'; // Importa el servicio
+import { GameService } from '../../services/game-service';
 import { Game } from '../../models/game-model';
 import { ConfigureComponent } from '../configure/configure-component';
 
@@ -21,6 +21,7 @@ export class StartComponent {
   constructor(private router: Router, private gameService: GameService) {}
 
   onSubmit() {
+   
     const gameData: Game = {
       player1Name: this.txtPlayer1,
       player2Name: this.txtPlayer2,
